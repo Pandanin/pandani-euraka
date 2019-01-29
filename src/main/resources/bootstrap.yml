@@ -1,0 +1,36 @@
+#######################################################################
+server:
+  port: 7000
+#######################################################################
+spring:
+  application:
+    #服务注册中心实例的主机名
+    name: PANDANI-EUREKA
+######################################################################
+eureka:
+  server:
+    # 是否开启保护模式，默认为true
+    enable-self-preservation: true
+    #清理无效节点的时间间隔
+    eviction-interval-timer-in-ms: 30000
+  instance:
+    hostname: ${spring.cloud.client.ipAddress}
+    # 表示eureka server至上一次收到client的心跳之后，等待下一次心跳的超时时间，在这个时间内若没收到下一次心跳，则将移除该instance。默认为90秒
+    lease-expiration-duration-in-seconds: 10
+    # 表示eureka client发送心跳给server端的频率。默认30秒，如果在设置时间之后，server端没有收到client的心跳，则将摘除该instance。
+    lease-renewal-interval-in-seconds: 10
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+  client:
+    #是否向服务注册中心注册自己
+    register-with-eureka: true
+    #是否检索服务
+    fetch-registry: true
+    #表示eureka client间隔多久去拉取服务注册信息，默认为30秒
+    registry-fetch-interval-seconds: 10
+    serviceUrl:
+      #服务注册中心的配置内容，指定服务注册中心的位置
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+############################################################################
+logging:
+  config: classpath:log4j2.xml
